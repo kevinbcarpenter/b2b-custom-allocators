@@ -1,0 +1,38 @@
+# Build directories
+build/
+
+# macOS
+.DS_Store
+
+# Cache directories
+.cache/
+
+# Node.js (if applicable)
+node_modules/
+package-lock.json
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Compiled object files
+*.o
+*.obj
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared libraries
+*.dll
+*.so
+*.dylib
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
