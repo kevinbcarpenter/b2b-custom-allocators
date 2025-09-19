@@ -1,5 +1,10 @@
 #include <iostream>
-#include <memory> // for std::allocator
+#include <memory>
+
+#pragma GCC diagnostic push
+// allocator::construct and allocator::destroy are deprecated as of C++ 17
+// Must update the CMakeList.txt to compile this example (or builds separately).
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 int main() {
   // Define an allocator for int
@@ -29,3 +34,5 @@ int main() {
 
   return 0;
 }
+
+#pragma GCC diagnostic pop
