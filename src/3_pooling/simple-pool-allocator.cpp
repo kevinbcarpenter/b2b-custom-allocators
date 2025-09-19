@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <new>
 
-template<typename T, size_t PoolSize = 8>
+template<typename T, std::size_t PoolSize = 8>
 class SimplePoolAllocator {
 private:
     // Pool storage - aligned for T
@@ -15,12 +15,12 @@ private:
     };
     
     FreeNode* free_head_ = nullptr;
-    size_t allocated_count_ = 0;
+    std::size_t allocated_count_ = 0;
     
     void initialize_pool() {
         // Initialize free list by threading through the pool
         char* current = pool_;
-        for (size_t i = 0; i < PoolSize - 1; ++i) {
+        for (std::size_t i = 0; i < PoolSize - 1; ++i) {
             reinterpret_cast<FreeNode*>(current)->next = 
                 reinterpret_cast<FreeNode*>(current + sizeof(T));
             current += sizeof(T);
@@ -97,9 +97,9 @@ public:
     }
     
     // Statistics
-    size_t allocated_count() const { return allocated_count_; }
-    size_t available_count() const { return PoolSize - allocated_count_; }
-    size_t pool_size() const { return PoolSize; }
+    std::size_t allocated_count() const { return allocated_count_; }
+    std::size_t available_count() const { return PoolSize - allocated_count_; }
+    std::size_t pool_size() const { return PoolSize; }
 };
 
 // Test class for demonstration

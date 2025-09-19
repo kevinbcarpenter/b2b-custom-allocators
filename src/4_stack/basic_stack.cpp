@@ -12,12 +12,12 @@
 class StackAllocator {
 private:
     char* memory_;          // Pointer to the allocated memory block
-    size_t total_size_;     // Total size of the memory block
-    size_t current_offset_; // Current top of stack (next allocation position)
+    std::size_t total_size_;     // Total size of the memory block
+    std::size_t current_offset_; // Current top of stack (next allocation position)
     
 public:
     // Constructor - allocates a large block of memory upfront
-    explicit StackAllocator(size_t size) 
+    explicit StackAllocator(std::size_t size) 
         : total_size_(size), current_offset_(0) {
         memory_ = new char[size];
         std::cout << "Stack allocator created with " << size << " bytes\n";
@@ -34,9 +34,9 @@ public:
     StackAllocator& operator=(const StackAllocator&) = delete;
     
     // Allocate raw memory from the stack
-    void* allocate(size_t bytes, size_t alignment = alignof(std::max_align_t)) {
+    void* allocate(std::size_t bytes, std::size_t alignment = alignof(std::max_align_t)) {
         // Calculate properly aligned offset
-        size_t aligned_offset = align_up(current_offset_, alignment);
+        std::size_t aligned_offset = align_up(current_offset_, alignment);
         
         // Check if we have enough space
         if (aligned_offset + bytes > total_size_) {
@@ -57,26 +57,26 @@ public:
     
     // Type-safe allocation template
     template<typename T>
-    T* allocate(size_t count = 1) {
-        size_t bytes = sizeof(T) * count;
+    T* allocate(std::size_t count = 1) {
+        std::size_t bytes = sizeof(T) * count;
         void* ptr = allocate(bytes, alignof(T));
         return static_cast<T*>(ptr);
     }
     
     // Get current stack position (for creating markers)
-    size_t get_marker() const {
+    std::size_t get_marker() const {
         return current_offset_;
     }
     
     // Reset stack to a previous marker (frees everything allocated after that point)
-    void free_to_marker(size_t marker) {
+    void free_to_marker(std::size_t marker) {
         if (marker > current_offset_) {
             std::cout << "Warning: Invalid marker " << marker 
                       << " (current offset is " << current_offset_ << ")\n";
             return;
         }
         
-        size_t freed_bytes = current_offset_ - marker;
+        std::size_t freed_bytes = current_offset_ - marker;
         current_offset_ = marker;
         
         std::cout << "Freed " << freed_bytes << " bytes, stack top now at " 
@@ -85,19 +85,19 @@ public:
     
     // Clear entire stack (reset to beginning)
     void clear() {
-        size_t freed_bytes = current_offset_;
+        std::size_t freed_bytes = current_offset_;
         current_offset_ = 0;
         std::cout << "Cleared entire stack, freed " << freed_bytes << " bytes\n";
     }
     
     // Statistics methods
-    size_t get_remaining_size() const { return total_size_ - current_offset_; }
-    size_t get_total_size() const { return total_size_; }
-    size_t get_used_size() const { return current_offset_; }
+    std::size_t get_remaining_size() const { return total_size_ - current_offset_; }
+    std::size_t get_total_size() const { return total_size_; }
+    std::size_t get_used_size() const { return current_offset_; }
     
 private:
     // Helper function to align a value up to the specified alignment
-    static size_t align_up(size_t value, size_t alignment) {
+    static std::size_t align_up(std::size_t value, std::size_t alignment) {
         return (value + alignment - 1) & ~(alignment - 1);
     }
 };
@@ -143,7 +143,7 @@ int main() {
     std::cout << "\n=== Marker-based deallocation demo ===\n";
     
     // Save a marker before allocating temporary data
-    size_t checkpoint = allocator.get_marker();
+    std::size_t checkpoint = allocator.get_marker();
     std::cout << "Saved checkpoint at offset " << checkpoint << "\n";
     
     // Allocate some temporary floats
